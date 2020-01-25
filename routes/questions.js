@@ -27,7 +27,7 @@ router.post("/", (req, res) => {
       { new: true },
       (err, updatedAdmin) => {
         if (err) return res.json({ err });
-        return res.json(createdQuestion);
+        return res.json({ createdQuestion, success: true });
       }
     );
   });
@@ -42,6 +42,14 @@ router.delete("/:id", (req, res) => {
       message: "deleted successfully",
       deletedQuestion
     });
+  });
+});
+
+// get question
+router.get("/:id", (req, res) => {
+  Question.findById(req.params.id, (err, question) => {
+    if (err) return res.json({ err });
+    res.json({ question, success: true });
   });
 });
 

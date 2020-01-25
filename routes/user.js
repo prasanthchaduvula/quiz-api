@@ -9,10 +9,12 @@ router.use(userauth.validateToken);
 
 // get a single user
 router.get("/", (req, res) => {
-  User.findById(req.user.userId, "-password", (err, user) => {
-    if (err) return res.json({ err });
-    res.json({ user, success: true });
-  });
+  User.findById(req.user.userId, "-password")
+    .populate("marksId")
+    .exec((err, user) => {
+      if (err) return res.json({ err });
+      res.json({ user, success: true });
+    });
 });
 
 // post marks
@@ -27,7 +29,7 @@ router.post("/submit", (req, res) => {
       { new: true },
       (err, updatedUser) => {
         if (err) return res.json({ err });
-        return res.json(createdMark);
+        return res.json({ createdMark, success: true });
       }
     );
   });
