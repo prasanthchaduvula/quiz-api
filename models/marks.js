@@ -7,6 +7,10 @@ var markSchema = new Schema(
       type: String,
       required: true
     },
+    totalmark: {
+      type: String,
+      required: true
+    },
     quizsetName: {
       type: String,
       required: true
