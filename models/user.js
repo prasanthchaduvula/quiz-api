@@ -10,7 +10,9 @@ var userSchema = new Schema(
     },
     userEmail: {
       type: String,
-      required: true
+      required: true,
+      unique: true,
+      match: /@/
     },
     userPassword: {
       type: String,

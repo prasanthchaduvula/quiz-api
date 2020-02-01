@@ -7,11 +7,11 @@ var questionSchema = new Schema(
       type: String,
       required: true
     },
-    answers: {
+    options: {
       type: [String],
       required: true
     },
-    correctanswer: {
+    answer: {
       type: String,
       required: true
     },
