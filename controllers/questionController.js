@@ -1,6 +1,6 @@
 var Question = require("../models/question");
 var Admin = require("../models/admin");
-
+var Quizset = require("../models/quizset");
 module.exports = {
   // get all questions
   getQuestions: (req, res) => {
