@@ -4,15 +4,15 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+require("dotenv").config();
 
 var app = express();
 app.use(express.static("public"));
 app.set("view engine", "ejs");
+
 // connect mongo
-const mongoServer =
-  "mongodb+srv://chaduvula:Ap97539753@cluster0-odgci.mongodb.net/test?retryWrites=true&w=majority";
 mongoose.connect(
-  mongoServer,
+  process.env.mongoServer,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
