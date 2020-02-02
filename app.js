@@ -6,10 +6,13 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 
 var app = express();
-
+app.use(express.static("public"));
+app.set("view engine", "ejs");
 // connect mongo
+const mongoServer =
+  "mongodb+srv://chaduvula:Ap97539753@cluster0-odgci.mongodb.net/test?retryWrites=true&w=majority";
 mongoose.connect(
-  "mongodb://localhost/quiz-api",
+  mongoServer,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -37,6 +40,12 @@ app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/questions", questionsRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/user", userRouter);
+
+// view index.ejs
+
+app.get("*", function(req, res, next) {
+  res.render("index");
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
