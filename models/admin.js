@@ -22,10 +22,10 @@ var adminSchema = new Schema(
       type: String,
       required: true
     },
-    questionsId: [
+    quizsetsId: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Question"
+        ref: "Quizset"
       }
     ]
   },

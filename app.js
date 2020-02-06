@@ -10,24 +10,13 @@ var app = express();
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
-// connect mongo
-mongoose.connect(
-  process.env.mongoServer,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  },
-  err => {
-    console.log("connected", err ? false : true);
-  }
-);
-
 // handling routes
 var adminsRouter = require("./routes/admins");
 var adminRouter = require("./routes/admin");
 var questionsRouter = require("./routes/questions");
 var usersRouter = require("./routes/users");
 var userRouter = require("./routes/user");
+var quizsetRouter = require("./routes/quizsets");
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -40,6 +29,19 @@ app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/questions", questionsRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/quizsets", quizsetRouter);
+
+// connect mongo
+mongoose.connect(
+  process.env.mongoServer,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  },
+  err => {
+    console.log("connected", err ? false : true);
+  }
+);
 
 // view index.ejs
 

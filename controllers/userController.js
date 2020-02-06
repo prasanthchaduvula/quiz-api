@@ -1,6 +1,7 @@
 var User = require("../models/user");
 var jwt = require("jsonwebtoken");
 var Mark = require("../models/marks");
+var Quizset = require("../models/quizset");
 
 module.exports = {
   // user signup
@@ -46,6 +47,23 @@ module.exports = {
       .exec((err, user) => {
         if (err) return res.json({ err });
         res.json({ user, success: true });
+      });
+  },
+  // get all quizsets
+  getQuizsets: (req, res) => {
+    Quizset.find({}, "-questionsId", (err, quizsets) => {
+      if (err) return res.json({ err });
+      res.json({ quizsets, success: true });
+    });
+  },
+
+  // get a single quizset
+  getSingleQuizset: (req, res) => {
+    Quizset.findById(req.params.id)
+      .populate("questionsId")
+      .exec((err, quizset) => {
+        if (err) return res.json({ err });
+        res.json({ quizset, success: true, message: "hi" });
       });
   },
 

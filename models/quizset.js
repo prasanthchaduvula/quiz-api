@@ -9,7 +9,8 @@ var quizsetSchema = new Schema({
     }
   ],
   quizsetName: {
-    type: String
+    type: String,
+    required: true
   }
 });
 

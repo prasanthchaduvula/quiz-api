@@ -7,22 +7,25 @@ var questionSchema = new Schema(
       type: String,
       required: true
     },
-    options: {
-      type: [String],
+    option1: {
+      type: String,
+      required: true
+    },
+    option2: {
+      type: String,
+      required: true
+    },
+    option3: {
+      type: String,
+      required: true
+    },
+    option4: {
+      type: String,
       required: true
     },
     answer: {
       type: String,
       required: true
-    },
-    quizset: {
-      type: String,
-      required: true
-    },
-    adminId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "Admin"
     }
   },
   { timestamps: true }

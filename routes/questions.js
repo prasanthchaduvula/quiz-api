@@ -8,9 +8,6 @@ var router = express.Router();
 // get all the questions
 router.get("/", questionController.getQuestions);
 
-// create question
-router.post("/", adminauth.validateToken, questionController.createQuestion);
-
 // delete question
 router.delete(
   "/:id",

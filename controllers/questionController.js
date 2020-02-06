@@ -10,17 +10,106 @@ module.exports = {
     });
   },
 
+  // get all quizsets
+  getQuizsets: (req, res) => {
+    Quizset.find({})
+      .populate("questionsId")
+      .exec((err, quizsets) => {
+        if (err) return res.json({ err });
+        res.json({ quizsets, success: true });
+      });
+  },
+
+  // get a single quizset
+  getSingleQuizset: (req, res) => {
+    Quizset.findById(req.params.id)
+      .populate("questionsId")
+      .exec((err, quizset) => {
+        if (err) return res.json({ err });
+        res.json({ quizset, success: true });
+      });
+  },
+
+  // create a quizset
+  createQuizset: (req, res) => {
+    let { adminId } = req.admin;
+    Quizset.findOne({ quizsetName: req.body.quizsetName }, (err, quizset) => {
+      if (err) return res.json({ err });
+      if (!quizset) {
+        Quizset.create(req.body, (err, createdQuizset) => {
+          if (err) return res.json({ err });
+          Admin.findByIdAndUpdate(
+            adminId,
+            { $push: { quizsetsId: createdQuizset.id } },
+            { new: true },
+            (err, updatedAdmin) => {
+              if (err) return res.json({ err });
+              return res.json({ createdQuizset, success: true });
+            }
+          );
+        });
+      }
+      if (quizset)
+        return res.json({
+          message: "already another quizset is created with the same name"
+        });
+    });
+  },
+
+  // delete a quizset
+  deleteQuizset: (req, res) => {
+    Quizset.findById(req.params.id, (err, quizset) => {
+      if (err) return res.json({ err });
+      if (!quizset) return res.json({ message: "no quizsets found" });
+      Quizset.findByIdAndDelete(req.params.id, (err, deletedQuizset) => {
+        if (err) return res.json({ err });
+        console.log(quizset.questionsId.length);
+        // delete questions inside quizset
+        if (quizset.questionsId.length) {
+          quizset.questionsId.forEach(question => {
+            Question.findByIdAndDelete(question._id, (err, deletedQuestion) => {
+              if (err) return res.json({ err });
+            });
+          });
+        } else {
+          return res.json({ success: true, message: "No questions to delete" });
+        }
+        res.json({
+          deletedQuizset,
+          success: true,
+          message: "deleted successfully"
+        });
+      });
+    });
+  },
+
+  // edit a quizzset
+  editQuizset: (req, res) => {
+    Quizset.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true },
+      (err, updatedQuizset) => {
+        if (err) return res.json({ err });
+        res.json({
+          updatedQuizset,
+          success: true,
+          message: "updated quizset successfully"
+        });
+      }
+    );
+  },
+
   // create a question
   createQuestion: (req, res) => {
-    let { adminId } = req.admin;
-    req.body.adminId = adminId;
     Question.create(req.body, (err, createdQuestion) => {
+      console.log(req.body);
       if (err) return res.json({ err });
-      Admin.findOneAndUpdate(
-        { _id: createdQuestion.adminId },
+      Quizset.findByIdAndUpdate(
+        req.params.id,
         { $push: { questionsId: createdQuestion.id } },
         { new: true },
-        (err, updatedAdmin) => {
+        (err, updatedQuizset) => {
           if (err) return res.json({ err });
           return res.json({ createdQuestion, success: true });
         }
