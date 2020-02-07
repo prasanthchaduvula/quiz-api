@@ -86,6 +86,7 @@ module.exports = {
   // edit a quizzset
   editQuizset: (req, res) => {
     Quizset.findById(req.params.id, (err, quizset) => {
+      console.log(quizset, req.body.quizsetName);
       if (err) return res.json({ err });
       if (quizset.quizsetName == req.body.quizsetName) {
         return res.json({
