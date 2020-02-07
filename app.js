@@ -7,6 +7,19 @@ var mongoose = require("mongoose");
 require("dotenv").config();
 
 var app = express();
+
+// connect mongo
+mongoose.connect(
+  process.env.mongoServer,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  },
+  err => {
+    console.log("connected", err ? false : true);
+  }
+);
+
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
@@ -30,18 +43,6 @@ app.use("/api/v1/questions", questionsRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/quizsets", quizsetRouter);
-
-// connect mongo
-mongoose.connect(
-  process.env.mongoServer,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  },
-  err => {
-    console.log("connected", err ? false : true);
-  }
-);
 
 // view index.ejs
 

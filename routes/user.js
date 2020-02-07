@@ -18,7 +18,11 @@ router.get(
   userController.getSingleQuizset
 );
 
-// post marks
-router.post("/submit", userauth.validateToken, userController.submitMarks);
+// submit test
+router.post(
+  "/quizsets/:id/submit",
+  userauth.validateToken,
+  userController.submitTest
+);
 
 module.exports = router;

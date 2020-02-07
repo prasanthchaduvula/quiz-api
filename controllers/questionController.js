@@ -23,7 +23,7 @@ module.exports = {
   // get a single quizset
   getSingleQuizset: (req, res) => {
     Quizset.findById(req.params.id)
-      .populate("questionsId")
+      .populate({ path: "questionsId" })
       .exec((err, quizset) => {
         if (err) return res.json({ err });
         res.json({ quizset, success: true });

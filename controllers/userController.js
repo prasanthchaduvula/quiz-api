@@ -60,28 +60,68 @@ module.exports = {
   // get a single quizset
   getSingleQuizset: (req, res) => {
     Quizset.findById(req.params.id)
-      .populate("questionsId")
+      .populate({ path: "questionsId", select: "-answer" })
       .exec((err, quizset) => {
         if (err) return res.json({ err });
         res.json({ quizset, success: true, message: "hi" });
       });
   },
 
-  // post marks
-  submitMarks: (req, res) => {
+  // submit test
+  submitTest: (req, res) => {
     let { userId } = req.user;
     req.body.userId = userId;
-    Mark.create(req.body, (err, createdMark) => {
-      if (err) return res.json({ err });
-      User.findOneAndUpdate(
-        { _id: createdMark.userId },
-        { $push: { marksId: createdMark.id } },
-        { new: true },
-        (err, updatedUser) => {
-          if (err) return res.json({ err });
-          return res.json({ createdMark, success: true });
+    console.log(req.body.attemptedQus);
+    Quizset.findById(req.params.id)
+      .populate("questionsId")
+      .exec((err, quizset) => {
+        if (err) return res.json({ err });
+        if (!req.body.attemptedQus.length) {
+          req.body.mark = 0;
+          req.body.totalmark = quizset.questionsId.length;
+          req.body.quizsetName = quizset.quizsetName;
+          Mark.create(req.body, (err, createdMark) => {
+            if (err) return res.json({ err });
+            User.findByIdAndUpdate(
+              userId,
+              { $push: { marksId: createdMark.id } },
+              { new: true },
+              (err, updatedUser) => {
+                if (err) return res.json({ err });
+                return res.json({ createdMark, success: true });
+              }
+            );
+          });
         }
-      );
-    });
+        if (req.body.attemptedQus.length) {
+          console.log("recievd");
+          let mark = 0;
+          quizset.questionsId.map(question => {
+            req.body.attemptedQus.map(attemptedQ => {
+              if (question._id == attemptedQ.Id) {
+                if (question.answer == attemptedQ.selectedOption) {
+                  mark = mark + 1;
+                }
+              }
+            });
+          });
+          console.log(mark);
+          req.body.mark = mark;
+          req.body.totalmark = quizset.questionsId.length;
+          req.body.quizsetName = quizset.quizsetName;
+          Mark.create(req.body, (err, createdMark) => {
+            if (err) return res.json({ err });
+            User.findByIdAndUpdate(
+              userId,
+              { $push: { marksId: createdMark.id } },
+              { new: true },
+              (err, updatedUser) => {
+                if (err) return res.json({ err });
+                return res.json({ createdMark, success: true });
+              }
+            );
+          });
+        }
+      });
   }
 };
