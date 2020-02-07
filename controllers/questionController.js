@@ -85,19 +85,27 @@ module.exports = {
 
   // edit a quizzset
   editQuizset: (req, res) => {
-    Quizset.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true },
-      (err, updatedQuizset) => {
-        if (err) return res.json({ err });
-        res.json({
-          updatedQuizset,
-          success: true,
-          message: "updated quizset successfully"
+    Quizset.findById(req.params.id, (err, quizset) => {
+      if (err) return res.json({ err });
+      if (quizset.quizsetName == req.body.quizsetName) {
+        return res.json({
+          message: "already another quizset is created with the same name"
         });
       }
-    );
+      Quizset.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true },
+        (err, updatedQuizset) => {
+          if (err) return res.json({ err });
+          res.json({
+            updatedQuizset,
+            success: true,
+            message: "updated quizset successfully"
+          });
+        }
+      );
+    });
   },
 
   // create a question
