@@ -5,9 +5,6 @@ var adminauth = require("../modules/admin.auth");
 var questionController = require("../controllers/questionController");
 var router = express.Router();
 
-// get all the questions
-// router.get("/", questionController.getQuestions);
-
 // delete question
 router.delete(
   "/:id",
